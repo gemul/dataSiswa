@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pendataan Siswa</title>
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/mainStyle.css" rel="stylesheet">
+    <link href="assets/plugin/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet">
+    <script type='text/javascript' src='assets/js/variables.js'></script>
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.autocomplete.min.js"></script>
+    <script src="assets/js/startup.js"></script>
+    <script src="assets/js/functions.js"></script>
+    <script src="assets/js/windowControl.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/plugin/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+    <script src="assets/js/refresher.js"></script>
+    <script>if (window.module) module = window.module;</script>
+  </head>
+  <body>
+    <div class='debugPanel' id='debugPanel'>
+      <div class='debugIcon'></div>
+      <div class='debugText'>Ready</div>
+    </div>
+    <nav id=navbar class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#"></a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav postLogin">
+          <li><a href="#">Dashboard</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Master <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="javascript:loadPage('pages/kelasList.html');">Data Kelas</a></li>
+              <li><a href="javascript:loadPage('pages/walasList.html');">Data Walikelas</a></li>
+              <li><a href="javascript:loadPage('pages/siswaList.html');">Data Siswa</a></li>
+              <li><a href="javascript:loadPage('pages/konselerList.html');">Data Konseler</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="javascript:loadPage('pages/manageRombel.html');">Rombel</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="#">Pengaturan Data Master</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Absensi <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="javascript:loadPage('pages/absensiManage.html');">Isi Data Absensi</a></li>
+              <li><a href="#">Rekap Absensi</a></li>
+            </ul>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Konseling <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="javascript:loadPage('pages/konselingRekam.html');">Rekam Konseling</a></li>
+              <li><a href="#">Laporan Guru</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Record <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Panggilan Ortu</a></li>
+              <li><a href="#">Home Visit</a></li>
+            </ul>
+          </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right" style="padding-right:-100px;margin-right:-30px;">
+          <li><a onclick="logout();" title="Logout"><span class='glyphicon glyphicon-log-out'></span></a></li>
+          <li><a onclick="eWindow.openDev();"><span class='glyphicon glyphicon-minus'></span></a></li>
+          <li><a onclick="eWindow.minimize();" title="Minimize"><span class='glyphicon glyphicon-minus'></span></a></li>
+          <li><a onclick="eWindow.maxToggle();" id=weMaximizeBtn title="Window"><span class='glyphicon glyphicon-resize-full'></span></a></li>
+          <li><a onclick="eWindow.close();" title="Exit"><span class='glyphicon glyphicon-remove'></span></a></li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+  <div class='postLogin fixedContainer' id=mainContent>
+  </div><!-- #mainContent -->
+  <div class='preLogin' id='preLogin'>
+  </div><!-- preLogin -->
+  <div class='fixedModal' id='fixedModal' style='display:none;'>
+    <div class='modalContent'></div>
+  </div>
+  </body>
+  <script type='text/javascript'>
+  loadPage('pages/konselingRekam.html');
+  </script>
+</html>

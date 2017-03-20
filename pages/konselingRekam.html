@@ -1,0 +1,253 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-6">
+      <h1><span id=pageTitle></span></h1>
+    </div>
+    <div class="col-xs-5" style='text-align:right' id='btnGroupSimpan'>
+    </div>
+    <div class="col-xs-5" style='text-align:right; display:none;' id='loaderSimpan'>
+      <img src='assets/image/default.gif' style='width:40px;'> Menyimpan data
+    </div>
+  </div><!-- row -->
+  <div class="row">
+    <div class="col-xs-12">
+      <form class='form-horizontal' id=frmRekamKonseling>
+        <div class='form-group'>
+          <label class='col-xs-4 control-label'>Pilih Siswa</label>
+          <div class='col-xs-7'>
+            <input type='text' class='form-control' name='namaSiswa' id='namaSiswa' placeholder='Nama'>
+            <div id=caption style='display:none;line-height:44px'><span id=captionNama></span><a href='javascript:editSiswa()'> <span class='glyphicon glyphicon-pencil'></span></a></div>
+            <input type='text' class='form-control' name='NIS' id='NIS' style='display:none;'>
+          </div>
+        </div><!-- form-group -->
+        <div class='form-group' id=detailRekam>
+          <label class='col-xs-4 control-label'>Tanggal</label>
+          <div class='col-xs-2'>
+            <input type='text' class='form-control' name='WaktuKonseling' id='WaktuKonseling'>
+            <span id=captionWaktuKonseling style='display:none;line-height:44px'>
+              <span id=captionWaktu></span>
+              <a href='javascript:editWaktu()'> <span class='glyphicon glyphicon-pencil'></span></a>
+            </span>
+          </div>
+          <label class='col-xs-2 control-label'>Kedatangan</label>
+          <div class='col-xs-3'>
+            <select type='text' class='form-control' name='KedatanganKonseling' placeholder='Kedatangan' id='KedatanganKonseling'>
+            </select>
+          </div>
+        </div><!-- form-group -->
+        <div id=formKonseling>
+          <div class='form-group'>
+            <label class='col-xs-4 control-label'>Data konseli yang telah diketahui</label>
+            <div class='col-xs-7'>
+              <textarea class='form-control' name='DataKonseling' id='DataKonseling' placeholder=''></textarea>
+            </div>
+          </div><!-- form-group -->
+          <div class='form-group'>
+            <label class='col-xs-4 control-label'>Data penting yang terjaring dalam konseling</label>
+            <div class='col-xs-7'>
+              <textarea class='form-control' name='DataPenting' id='DataPenting' placeholder=''></textarea>
+            </div>
+          </div><!-- form-group -->
+          <div class='form-group'>
+            <label class='col-xs-4 control-label'>Diagnosa masalah</label>
+            <div class='col-xs-7'>
+              <textarea class='form-control' name='DiagnosaMasalah' id='DiagnosaMasalah' placeholder=''></textarea>
+            </div>
+          </div><!-- form-group -->
+          <div class='form-group'>
+            <label class='col-xs-4 control-label'>Alternatif pemecahan masalah</label>
+            <div class='col-xs-7'>
+              <textarea class='form-control' name='AlternatifPemecahan' id='AlternatifPemecahan' placeholder=''></textarea>
+            </div>
+          </div><!-- form-group -->
+          <div class='form-group'>
+            <label class='col-xs-4 control-label'>Putusan masalah dan implementasinya</label>
+            <div class='col-xs-7'>
+              <textarea class='form-control' name='PutusanMasalah' id='PutusanMasalah' placeholder=''></textarea>
+            </div>
+          </div><!-- form-group -->
+          <div class='form-group'>
+            <label class='col-xs-4 control-label'>Rencana layanan lanjutan</label>
+            <div class='col-xs-7'>
+              <textarea class='form-control' name='RencanaLayanan' id='RencanaLayanan' placeholder=''></textarea>
+            </div>
+          </div><!-- form-group -->
+          <div class='form-group'>
+            <label class='col-xs-4 control-label'>Evaluasi proses dan hasil sementara</label>
+            <div class='col-xs-7'>
+              <textarea class='form-control' name='EvaluasiHasil' id='EvaluasiHasil' placeholder=''></textarea>
+            </div>
+          </div><!-- form-group -->
+          <div class='form-group'>
+            <label class='col-xs-4 control-label'>Penanganan</label>
+            <div class='col-xs-7'>
+              <textarea class='form-control' name='Penanganan' id='Penanganan' placeholder=''></textarea>
+            </div>
+          </div><!-- form-group -->
+        </div><!--formKonseling-->
+        <div class='form-group'>
+          <div class='col-xs-8 col-xs-offset-4' id=tombolSimpan>
+            <button type=button class='btn btn-success' onclick="simpanRekam()">Simpan</button>
+          </div>
+          <div class='col-xs-8 col-xs-offset-4' id=tombolMuat>
+            <button type=button class='btn btn-success' onclick="muatRekam()">Muat</button>
+          </div>
+        </div><!-- form-group -->
+      </form>
+    </div><!-- col -->
+  </div><!-- row -->
+<script type='text/javascript'>
+gVar['entryMode']=false;
+function simpanRekam(){
+  if($('#WaktuKonseling').val()==""){
+    alert("Tanggal wajib diisi.","Data tidak jangkep");
+  }else{
+      $.ajax({
+      url:webAddr+'/node.php?node=konseling-update',
+      type:'post',
+      dataType:'json',
+      data:$('#frmRekamKonseling').serialize(),
+      beforeSend:function(){
+        $('#tombolSimpan').html("Menyimpan data mohon ditunggu...");
+        statusBar("Menyimpan data...");
+      },
+      success:function(r){
+        if(r.status===undefined){
+          alert("Penyimpanan data gagal, silahkan hubungi admin.\n[invResp]","Kesalahan Server");
+        }else if(r.status==1){
+          $('#tombolSimpan').html("<button type=button class='btn btn-success' onclick='simpanRekam()'>Simpan</button>");
+          statusBar("Data berhasil disimpan.");
+          alert("Perubahan sudah disimpan.","Sukses");
+        }else{
+          $('#tombolSimpan').html("<button type=button class='btn btn-success' onclick='simpanRekam()'>Simpan</button>");
+          alert("Penyimpanan data gagal, silahkan hubungi admin.\n[invQue]","Kesalahan Server");
+          statusBar("Gagal menyimpan data.");
+        }
+        statusBar("Ready.");
+      },
+      error:function(){
+        alert("Penyimpanan data gagal. Pastikan anda terhubung ke internet lalu silahkan ulangi kembali.","Kesalahan Koneksi");
+          loadPage('pages/konselingRekam.html');
+      }
+    });
+  }
+}
+function muatRekam(){
+  $.ajax({
+    url:webAddr+'/node.php?node=rekam-muat',
+    dataType:'json',
+    type:'post',
+    data:{'NIS':$('#NIS').val(),'WaktuKonseling':$('#WaktuKonseling').val()},
+    beforeSend:function(){
+      $('#tombolMuat').hide();
+      $('#WaktuKonseling').hide();
+      $('#captionWaktuKonseling').show();
+      $('#captionWaktu').html($('#WaktuKonseling').val());
+    },
+    success:function(r){
+      if(r.status==undefined){
+        alert('Gagal memuat rekam. Kesalahan data [invResp]');
+        editWaktu();
+      }else if (r.status==1) {
+        $('#formKonseling #DataKonseling').val(r.rekamKonseling.DataKonseling);
+        $('#formKonseling #DataPenting').val(r.rekamKonseling.DataPenting);
+        $('#formKonseling #DiagnosaMasalah').val(r.rekamKonseling.DiagnosaMasalah);
+        $('#formKonseling #AlternatifPemecahan').val(r.rekamKonseling.AlternatifPemecahan);
+        $('#formKonseling #PutusanMasalah').val(r.rekamKonseling.PutusanMasalah);
+        $('#formKonseling #RencanaLayanan').val(r.rekamKonseling.RencanaLayanan);
+        $('#formKonseling #EvaluasiHasil').val(r.rekamKonseling.EvaluasiHasil);
+        $('#formKonseling #Penanganan').val(r.rekamKonseling.Penanganan);
+        $('#KedatanganKonseling').val(r.rekamKonseling.KedatanganKonseling);
+        $('#formKonseling').show();
+        $('#tombolSimpan').show();
+
+      }else if (r.status==2) {
+        $('#formKonseling').show();
+        $('#tombolSimpan').show();
+
+      }else {
+        alert('Gagal memuat rekam. Kesalahan data [invStat]');
+        editWaktu();
+      }
+    },
+    error:function(){
+      alert('Gagal memuat rekam. Koneksi ke server tidak berhasil. [errConnState]');
+      editWaktu();
+    }
+  });
+}
+function editWaktu(){
+  $('#tombolSimpan').hide();
+  $('#tombolMuat').show();
+  $('#formKonseling').hide();
+  $('#WaktuKonseling').show();
+  $('#formKonseling textarea').val("");
+  $('#captionWaktuKonseling').hide();
+}
+function editSiswa(){
+  $('#detailRekam').hide();
+  $('#tombolSimpan').hide();
+  $('#tombolMuat').hide();
+  $('#formKonseling').hide();
+  $('#formKonseling input').val("");
+  $('#namaSiswa').val('').show();
+  $('#caption').hide();
+}
+$(document).ready(function(){
+  statusBar("Ready.");
+  $('#pageTitle').html("Rekaman Konseling");
+  $('#WaktuKonseling').val((new Date()).toISOString().substring(0, 10));
+  $('#WaktuKonseling').datepicker({format:'yyyy-mm-dd'});
+  $('#detailRekam').hide();
+  $('#tombolSimpan').hide();
+  $('#tombolMuat').hide();
+  $('#formKonseling').hide();
+  $('#namaSiswa').autocomplete({
+      serviceUrl: webAddr+'/node.php?node=ac-siswa-list-absensi',
+      onSelect: function (suggestion) {
+        $('#NIS').val(suggestion.data);
+        $('#namaSiswa').hide();
+        $('#captionNama').html(suggestion.value);
+        $('#caption').show();
+        $('#detailRekam').show();
+        $('#tombolMuat').show();
+      }
+  });
+  loadKonseler();
+});
+function loadKonseler(){
+  $.ajax({
+    url:webAddr+'/node.php?node=snip-option-konseler',
+    dataType:'html',
+    type:'post',
+    beforeSend:function(){
+    },
+    success:function(res){
+      if(res==""){
+        statusBar("Gagal memuat data konseler.");
+      }else{
+        $('#KedatanganKonseling').html(res);
+      }
+    },
+    error:function(){
+
+    }
+  });
+}
+function refresh10list(data){
+  $.ajax({
+    url:webAddr+'/node.php?node=absensi-list10&NIS='+data,
+    dataType:'json',
+    type:'post',
+    beforeSend:function(){
+      $('#listSepuluhTerakhir').html('<tr><td>Memuat...</td></tr>')
+    },
+    success:function(res){
+      $('#listSepuluhTerakhir').html("<tr><th width=200>Tanggal</th><th>Alasan</th></tr>"+tabulator(res));
+    },
+    error:function(){
+
+    }
+  });
+}
+</script>

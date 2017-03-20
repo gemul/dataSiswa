@@ -1,0 +1,131 @@
+
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-4">
+        <h1>Data Wali Kelas</h1>
+      </div>
+    </div><!-- row -->
+    <div class="row">
+      <div class="col-xs-12" style="height:400px;overflow-y:scroll">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Nama Terang</th>
+              <th>HP</th>
+              <th>Kelas</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id='aListWalas'>
+          </tbody>
+        </table>
+      </div><!-- col -->
+    </div><!-- row -->
+    <div class='row'>
+      <div class="col-xs-8">
+          <button onclick="loadPage('pages/walasAdd.html');" class='btn btn-primary'>Tambah <span class='glyphicon glyphicon-plus'></span></button>
+          <button onclick="filterWalas()" class='btn btn-primary'>Refresh <span class='glyphicon glyphicon-refresh'></span></button>
+          <span id=loaderStatus style="display:none;"><img src='assets/image/default.gif' style='width:30px;'></span>
+      </div>
+      <div class='col-xs-4'>
+          <input type="text" class="form-control right" id="textFilter" placeholder="Filter">
+      </div>
+    </div><!-- row -->
+  </div>
+  <script type='text/javascript'>
+  function loadListWalas(filter){
+    if(filter===undefined)filter="";
+    $.ajax({
+      url:webAddr+'/node.php?node=walas-list',
+      dataType:'html',
+      data:{'filter':filter},
+      type:'post',
+      beforeSend:function(){
+        $('#loaderStatus').show();
+        $('#aListWalas').html("<tr><td colspan='6' align='center'><img src='assets/image/default.gif' style='width:30px;'></td></tr>");
+        statusBar("Memuat data walas");
+      },
+      success:function(r){
+        try{
+          var jr=$.parseJSON(r);
+          if(jr.encumbered!==undefined){
+            statusBar("Data terlalu banyak untuk ditampilkan.");
+            $('#aListWalas').html("<tr><td colspan='6' align='center'>Data terlalu banyak untuk ditampilkan, silahkan persempit filter.</td></tr>");
+          }else if(jr.zeroresult!==undefined){
+            statusBar("Data tidak ditemukan.");
+            $('#aListWalas').html("<tr><td colspan='6' align='center'>Data tidak ditemukan</td></tr>");
+          }else{
+            $('#aListWalas').html(tabulator(r,"<a onclick='editWalas([id])' title='Edit'><span class='glyphicon glyphicon-pencil'></span></a> <a onclick='deleteWalas([id])' title='Hapus'><span class='glyphicon glyphicon-trash'></span></a>"));
+            statusBar("Ready. Gunakan filter untuk melakukan pencarian.");
+          }
+          $('#loaderStatus').hide();
+        }
+        catch(err){
+          $('#aListWalas').html("<tr><td colspan='6' align='center'>Data gagal dimuat. Silahkan lapor ke pihak yang berwenang:<br /> "+err+"</td></tr>");
+          $('#loaderStatus').hide();
+          statusBar('parsing error');
+        }
+      },
+      error:function(){
+        $('#loaderStatus').hide();
+        statusBar("Kesalahan koneksi. Silahkan ulangi kembali");
+      }
+    });
+  }
+  function deleteWalas(id){
+    if(confirm("Apakah anda yakin akan menghapus data ini?","Konfirmasi")){
+      $.ajax({
+        url:webAddr+'/node.php?node=walas-delete',
+        dataType:'html',
+        data:{'id':id},
+        type:'post',
+        beforeSend:function(){
+          $('#loaderStatus').show();
+          statusBar("Menghapus data walas");
+        },
+        success:function(r){
+          try{
+            var jr=$.parseJSON(r);
+            if(jr.dependent!==undefined){
+              alert("Tidak dapat menghapus data karena terdapat dependensi.");
+              statusBar("Dependent data.");
+            }else if(jr.status==1){
+              $('#table-item-'+id).hide();
+              statusBar("Data dihapus.");
+            }
+            $('#loaderStatus').hide();
+          }
+          catch(err){
+            alert("Data gagal dimuat. Silahkan lapor ke pihak yang berwenang\n"+err+"");
+            $('#loaderStatus').hide();
+            statusBar('parsing error');
+          }
+        },
+        error:function(){
+          $('#loaderStatus').hide();
+          statusBar("Kesalahan koneksi. Silahkan ulangi kembali");
+        }
+      });
+    }else{
+
+    }
+  }
+  $('input').keyup(function() {
+      delay(function(){
+        filterWalas();
+      }, 1000 );
+  });
+  function filterWalas(){
+    loadListWalas($('#textFilter').val());
+  }
+  function editWalas(id){
+    gVar['editMode']=true;
+    gVar['id']=id;
+    loadPage('pages/walasAdd.html');
+  }
+  $(document).ready(function(){
+    loadListWalas();
+    statusBar("Ready. Gunakan filter untuk melakukan pencarian.");
+    gVar['editMode']=false;
+  });
+  </script>

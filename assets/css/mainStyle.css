@@ -1,0 +1,102 @@
+.navbar {
+  -webkit-app-region: drag;
+  border-left:none;
+  border-right:none;
+  margin-bottom:5px;
+}
+.navbar li {
+  -webkit-app-region: no-drag;
+}
+body {
+  border:1px solid #1967BE;
+  border-top:none;
+  overflow:hidden;
+}
+html,body {
+  height:100%;
+}
+h1 {
+  margin-top:10px;
+}
+
+#mainContent div {
+  padding: 0px;
+}
+#mainContent .row > div{
+  margin:0px;
+  padding:0px;
+}
+.debugPanel {
+  position:fixed;
+  bottom:0px;
+  left:0px;
+  right:0px;
+  height:20px;
+  background:#1967BE;
+  color:#fff;
+  font-size:14px;
+  padding-left:10px;
+}
+.debugPanel .debugIcon{
+  width:20px;
+  float:left;
+}
+.debugPanel .debugText{
+  float:left;
+}
+.postLogin {
+  display:none;
+}
+.preLogin {
+  display:block;
+  width:100%;
+}
+.loginSpinner{
+  position:fixed;
+  top:200px;
+  width:100%;
+}
+.preLogin .lsCenterWrap {
+  margin:auto;
+  text-align:center;
+}
+.preLogin .loginForm {
+}
+.fixedContainer {
+  position:fixed;
+  top:52px;
+  left:0px;
+  right:0px;
+  bottom:20px;
+  overflow:auto;
+  overflow-x: hidden;
+}
+.fixedModal {
+  position:fixed;
+  top:52px;
+  left:0px;
+  right:0px;
+  bottom:20px;
+  overflow:hidden;
+  background:rgba(0,0,0,0.4);
+  z-index:100;
+}
+.fixedModal .modalContent {
+  color:#fff;
+  text-align:center;
+  margin-top:200px;
+}
+.fixedModal .modalContent a {
+  color:#fff;
+}
+.autocomplete-suggestion {
+  background:#eef;
+  padding:6px;
+  border-left:4px solid #aaf;
+}
+div.autocomplete-suggestion > div.autocomplete-suggestion {
+}
+.autocomplete-selected {
+  background:#aaf;
+  cursor:pointer;
+}

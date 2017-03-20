@@ -1,0 +1,171 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-6">
+      <h1><span id=pageTitle>Manajemen Rombel</span></h1>
+    </div>
+    <div class="col-xs-5" style='text-align:right' id='btnGroupSimpan'>
+    </div>
+  </div><!-- row -->
+  <div class="row">
+    <div class='col-xs-2'>
+      <select type='text' class='form-control' name='frmid_kelas' placeholder='Kelas' id='frmid_kelas'>
+      </select>
+    </div>
+    <div class='col-xs-2'>
+      <button class='btn btn-warning' onclick="muatRombel()"><i class='glyphicon glyphicon-pencil'></i> Edit</button>
+    </div>
+    <div class="col-xs-8"  id='loaderSimpan'>
+
+    </div>
+  </div><!-- row -->
+  <div class="row">
+      <div class='col-xs-12'>
+        <table class="table">
+          <thead>
+            <tr>
+              <th width=20%>NIS</th>
+              <th>Nama siswa</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id='aListSiswaRombel'>
+          </tbody>
+        </table>
+      </div>
+
+  </div><!-- row -->
+<script type='text/javascript'>
+function muatRombel(){
+  gVar['id']=$('#frmid_kelas').val();
+  $.ajax({
+    url:webAddr+'/node.php?node=rombel-get',
+    type:'post',
+    data:{'id':$('#frmid_kelas').val()},
+    dataType:'json',
+    beforeSend:function(){
+      $('.form-control').attr("disabled", "disabled");
+      $('#loaderSimpan').html("<img src='assets/image/default.gif' style='width:40px;'> Memuat");
+      statusBar("Loading data");
+    },
+    success:function(r){
+      if(r.status==1){
+        $('.form-control').removeAttr("disabled");
+        statusBar();
+        $('#loaderSimpan').html("<span style='float:right;font-weight:bold;'>"+r.dataKelas.NamaKelas+" ( "+r.jumlah+" Siswa )</span>");
+        $('#aListSiswaRombel').html("<tr style='background:#aaf;'><td style='font-weight:bold;'>Tambah Peserta</td><td><input style=width:100%; type=text class=input id=addField></td><td></td></tr>"+tabulator(r.dataSiswa,"<a onclick='hapusRelasiRombel([id])' title='Hapus'><span class='glyphicon glyphicon-remove'></span></a>"));
+        $('#addField').autocomplete({
+            serviceUrl: webAddr+'/node.php?node=ac-siswa-list',
+            onSelect: function (suggestion) {
+                if(confirm('Menambahkan ' + suggestion.value + ' sebagai peserta rombel ini. Anda yakin?',"Konfirmasi")){
+                  addPesertaRombel(suggestion.data);
+                }else{
+                  $('#addField').val("");
+                }
+
+            }
+        });
+      }else if(r.status==2){
+        statusBar("Not found");
+      }else if(r.status==3){
+        statusBar("Query failed");
+      }else{
+        statusBar("Invalid data");
+      }
+    },
+    error:function(){
+      statusBar("Gagal memuat data");
+    }
+  });
+}
+function addPesertaRombel(data){
+  var id_kelas=gVar['id'];
+  var NIS=data;
+
+  $.ajax({
+    url:webAddr + "/node.php?node=rombel-update",
+    type:'post',
+    dataType:'json',
+    data:{'id_kelas':id_kelas,'NIS':NIS,'tahun':tahunAjaran},
+    beforeSend:function(){
+      modal(1,"Menyimpan.<br><img src='assets/image/ring.gif' style='width:40px;'>");
+      statusBar("Loading data");
+    },
+    success:function(r){
+      //reset the fcking thing
+      //status 1:ok 3:error
+      if(r.status===undefined){
+        errorCache=r;
+        modal(2000,"Terjadi kesalahan. Data tidak dapat disimpan.");
+        statusBar("Error:json malformed");
+      }else{
+        if(r.status==1){
+          modal(0);
+          muatRombel();
+          statusBar("Success");
+        }else if(r.status==3){
+          modal(2000,"Gagal menambahkan siswa, silahkan lapor.");
+          statusBar("Error:server query error");
+          $('#addField').val("");
+        }else{
+          modal(2000,"Unknown error.");
+          statusBar("Error:unknown error");
+        }
+      }
+
+    },
+    error:function(r){
+      statusBar("Error:ajax error");
+      modal(2000,"Gagal menghubungi server. Laporkan ke pihak berwenang");
+
+    }
+  });
+}
+
+function hapusRelasiRombel(id){
+  if(confirm("Apakah anda yakin akan menghapus siswa ini dari rombel?","Konfirmasi")){
+    $.ajax({
+      url:webAddr+'/node.php?node=rombel-delete',
+      type:'post',
+      dataType:'json',
+      data:{'id':id},
+      beforeSend:function(){
+        modal(1,"Menghapus.<br><img src='assets/image/ring.gif' style='width:40px;'>");
+        statusBar("Loading data");
+      },
+      success:function(r){
+        if(r.status===undefined){
+          statusBar("Error:json malformed");
+          modal(1000,"Terjadi kesalahan. silahkan lapor.");
+        }else if(r.status==1){
+          statusBar("Success");
+          modal(1000,"Data berhasil dihapus");
+          muatRombel();
+        }else{
+          statusBar("Error:query error");
+          modal(1000,"Kesalahan kueri database. silahkan lapor");
+        }
+      },
+      error:function(e){
+        statusBar("Error:ajax error");
+        modal(1000,"Kesalahan ajax. silahkan lapor");
+      }
+    });
+  }else{
+
+  }
+}
+
+$(document).ready(function(){
+  statusBar("Ready.");
+  $('#frmid_kelas').load(webAddr+'/node.php?node=snip-option-kelas');
+});
+</script>
+<style>
+.autocomplete-suggestion
+s { border: 1px solid #999; background: #FFF; overflow: auto; }
+.autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
+.autocomplete-selected { background: #F0F0F0; }
+.autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
+.autocomplete-group { padding: 2px 5px; }
+.autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
+</style>

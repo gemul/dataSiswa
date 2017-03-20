@@ -1,0 +1,223 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-6">
+      <h1><span id=pageTitle></span></h1>
+    </div>
+    <div class="col-xs-5" style='text-align:right' id='btnGroupSimpan'>
+      <button class='btn btn-warning' style='margin-top:4px;' onclick="loadPage('pages/siswaList.html')"><i class='glyphicon glyphicon-arrow-left'></i> Batal</button>
+      <button class='btn btn-success' style='margin-top:4px;' onclick="saveSiswa();"><i class='glyphicon glyphicon-check'></i> Simpan</button>
+    </div>
+    <div class="col-xs-5" style='text-align:right; display:none;' id='loaderSimpan'>
+      <img src='assets/image/default.gif' style='width:40px;'> Menyimpan data
+    </div>
+  </div><!-- row -->
+  <div class="row">
+    <div class="col-xs-12">
+      <form class='form-horizontal' id=frmSiswa>
+        <div class='form-group'>
+          <label class='col-xs-2 control-label'>NIS</label>
+          <div class='col-xs-2'>
+            <input type='text' class='form-control' name='frmNIS' placeholder='NIS'>
+          </div>
+          <label class='col-xs-1 control-label'>Nama</label>
+          <div class='col-xs-4'>
+            <input type='text' class='form-control' name='frmNamaSiswa' placeholder='Nama'>
+          </div>
+          <div class='col-xs-2'>
+            <input type='text' class='form-control' name='frmNamaPanggilan' placeholder='Panggilan'>
+          </div>
+        </div><!-- form-group -->
+        <div class='form-group'>
+          <label class='col-xs-2 control-label'>Tempat Lahir</label>
+          <div class='col-xs-2'>
+            <input type='text' class='form-control' name='frmTempatLahir' placeholder='Tempat Lahir'>
+          </div>
+          <label class='col-xs-1 control-label'>Tgl</label>
+          <div class='col-xs-2'>
+            <input type='text' class='form-control' name='frmTglLahir' placeholder='Tanggal Lahir'>
+          </div>
+          <label class='col-xs-2 control-label'>Kelamin</label>
+          <div class='col-xs-2'>
+            <select type='text' class='form-control' name='frmKelaminSiswa' placeholder='Kelamin'>
+              <option value='Laki-laki'>Laki-laki</option>
+              <option value='Perempuan'>Perempuan</option>
+            </select>
+          </div>
+        </div><!-- form-group -->
+        <div class='form-group'>
+          <label class='col-xs-2 control-label'>Alamat Siswa</label>
+          <div class='col-xs-9'>
+            <input type='text' class='form-control' name='frmAlamatSiswa' placeholder='Alamat'>
+          </div>
+        </div><!-- form-group -->
+        <div class='form-group'>
+          <label class='col-xs-2 control-label'>Agama</label>
+          <div class='col-xs-2'>
+            <input type='text' class='form-control' name='frmAgama' placeholder='Agama'>
+          </div>
+          <label class='col-xs-1 control-label'>Cita2</label>
+          <div class='col-xs-2'>
+            <input type='text' class='form-control' name='frmCitaCita' placeholder='Cita-cita'>
+          </div>
+        </div><!-- form-group -->
+        <div class='form-group'>
+          <label class='col-xs-2 control-label'>Nama Ortu</label>
+          <div class='col-xs-5'>
+            <input type='text' class='form-control' name='frmNamaOrtu' placeholder='Nama Ortu'>
+          </div>
+          <label class='col-xs-2 control-label'>HP Ortu</label>
+          <div class='col-xs-2'>
+            <input type='text' class='form-control' name='frmNoHpOrtu' placeholder='HP Ortu'>
+          </div>
+        </div><!-- form-group -->
+        <div class='form-group'>
+          <label class='col-xs-2 control-label'>Alamat Ortu</label>
+          <div class='col-xs-9'>
+            <input type='text' class='form-control' name='frmAlamatOrtu' placeholder='Alamat Ortu'>
+          </div>
+        </div><!-- form-group -->
+        <div class='form-group'>
+          <label class='col-xs-2 control-label'>SD/MI</label>
+          <div class='col-xs-4'>
+            <input type='text' class='form-control' name='frmNamaSekolah_SD_MI' placeholder=''>
+          </div>
+          <label class='col-xs-1 control-label'>Tahun</label>
+          <div class='col-xs-2'>
+            <input type='text' class='form-control' name='frmTahunSekolah_SD_MI' placeholder=''>
+          </div>
+          <label class='col-xs-1 control-label'>NUN</label>
+          <div class='col-xs-1'>
+            <input type='text' class='form-control' name='frmNilaiNUN_SD_MI' placeholder=''>
+          </div>
+        </div><!-- form-group -->
+        <div class='form-group'>
+          <label class='col-xs-2 control-label'>SMP/MTS</label>
+          <div class='col-xs-4'>
+            <input type='text' class='form-control' name='frmNamaSekolah_SMP_MTS' placeholder=''>
+          </div>
+          <label class='col-xs-1 control-label'>Tahun</label>
+          <div class='col-xs-2'>
+            <input type='text' class='form-control' name='frmTahunSekolah_SMP_MTS' placeholder=''>
+          </div>
+          <label class='col-xs-1 control-label'>NUN</label>
+          <div class='col-xs-1'>
+            <input type='text' class='form-control' name='frmNilaiNUN_SMP_MTS' placeholder=''>
+          </div>
+        </div><!-- form-group -->
+      </form>
+    </div><!-- col -->
+  </div>
+<script type='text/javascript'>
+function saveSiswa(){
+  if(gVar['editMode']){
+    var additionalData="&edit=1&id="+gVar['id'];
+    var node="siswa-update";
+  }else{
+    var additionalData="";
+    var node="siswa-save";
+  }
+  if($('[name="frmNIS"]').val()=="" || $('[name="frmNamaSiswa"]').val()=="" || $('[name="frmTempatLahir"]').val()==""){
+    alert("Isi NIS, Nama, Tempat dan Tanggal lahir wajib.","Data tidak jangkep");
+  }else if(!String($('[name="frmTglLahir"]').val()).match(/\d{4}\-\d{2}\-\d{2}/gi)){
+    alert("Format penulisan tanggal yang benar : YYYY/MM/DD\nContoh: 2016-12-30 untuk 30 Desember 2016","Tanggal salah");
+  }else{
+      $.ajax({
+      url:webAddr+'/node.php?node='+node,
+      type:'post',
+      dataType:'json',
+      data:$('#frmSiswa').serialize()+additionalData,
+      beforeSend:function(){
+        $('#btnGroupSimpan').hide();
+        $('#loaderSimpan').show();
+        statusBar("Menyimpan data...");
+      },
+      success:function(r){
+        if(r.status===undefined){
+          alert("Penyimpanan data gagal, silahkan hubungi admin.\n[invResp]","Kesalahan Server");
+        }else if(r.status==1){
+          loadPage('pages/siswaList.html');
+        }else if(r.status==2){
+          alert("Penyimpanan data gagal, NIM sudah terdaftar.\n[duplicate]","Kesalahan Data");
+          $('#btnGroupSimpan').show();
+          $('#loaderSimpan').hide();
+        }else if(r.status==3){
+          alert("Penyimpanan data gagal, silahkan hubungi admin.\n[queryFail]","Kesalahan Server");
+          $('#btnGroupSimpan').show();
+          $('#loaderSimpan').hide();
+        }else if(r.status==4){
+          alert("Penyimpanan data gagal, silahkan hubungi admin.\n[queryNotFound]","Kesalahan Server");
+          $('#btnGroupSimpan').show();
+          $('#loaderSimpan').hide();
+        }else{
+          alert("Penyimpanan data gagal, silahkan hubungi admin.\n[invAction]","Kesalahan Server");
+          $('#btnGroupSimpan').show();
+          $('#loaderSimpan').hide();
+        }
+        statusBar("Ready.");
+      },
+      error:function(){
+        alert("Penyimpanan data gagal. Pastikan anda terhubung ke internet lalu silahkan ulangi kembali.","Kesalahan Koneksi");
+        $('#btnGroupSimpan').show();
+        $('#loaderSimpan').hide();
+        statusBar("Koneksi gagal. ");
+      }
+    });
+  }
+}
+function fillForm(){
+  $.ajax({
+    url:webAddr+'/node.php?node=siswa-get',
+    type:'post',
+    data:{'id':gVar['id']},
+    dataType:'json',
+    beforeSend:function(){
+      $('.form-control').attr("disabled", "disabled");
+      statusBar("Loading data");
+    },
+    success:function(r){
+      if(r.status==1){
+        $('.form-control').removeAttr("disabled");
+        statusBar();
+        $('[name="frmNIS"]').val(r.dataSiswa.NIS);
+    		$('[name="frmNamaSiswa"]').val(r.dataSiswa.NamaSiswa);
+    		$('[name="frmNamaPanggilan"]').val(r.dataSiswa.NamaPanggilan);
+    		$('[name="frmTempatLahir"]').val(r.dataSiswa.TempatLahir);
+    		$('[name="frmTglLahir"]').val(r.dataSiswa.TglLahir);
+    		$('[name="frmAlamatSiswa"]').val(r.dataSiswa.AlamatSiswa);
+    		$('[name="frmAgama"]').val(r.dataSiswa.Agama);
+    		$('[name="frmCitaCita"]').val(r.dataSiswa.CitaCita);
+    		$('[name="frmNamaOrtu"]').val(r.dataSiswa.NamaOrtu);
+    		$('[name="frmAlamatOrtu"]').val(r.dataSiswa.AlamatOrtu);
+    		$('[name="frmNoHpOrtu"]').val(r.dataSiswa.NoHpOrtu);
+    		$('[name="frmKelaminSiswa"]').val(r.dataSiswa.KelaminSiswa);
+    		$('[name="frmNamaSekolah_SD_MI"]').val(r.dataSiswa.NamaSekolah_SD_MI);
+    		$('[name="frmTahunSekolah_SD_MI"]').val(r.dataSiswa.TahunSekolah_SD_MI);
+    		$('[name="frmNilaiNUN_SD_MI"]').val(r.dataSiswa.NilaiNUN_SD_MI);
+    		$('[name="frmNamaSekolah_SMP_MTS"]').val(r.dataSiswa.NamaSekolah_SMP_MTS);
+    		$('[name="frmTahunSekolah_SMP_MTS"]').val(r.dataSiswa.TahunSekolah_SMP_MTS);
+    		$('[name="frmNilaiNUN_SMP_MTS"]').val(r.dataSiswa.NilaiNUN_SMP_MTS);
+      }else if(r.status==2){
+        statusBar("Not found");
+      }else if(r.status==3){
+        statusBar("Query failed");
+      }else{
+        statusBar("Invalid data");
+      }
+    },
+    error:function(){
+      statusBar("Gagal memuat data");
+    }
+  });
+}
+$(document).ready(function(){
+  statusBar("Ready.");
+  if(gVar['editMode']){
+    fillForm();
+    $('#pageTitle').html("Ubah data siswa");
+  }else{
+    $('#pageTitle').html("Tambah data siswa");
+    $('.form-control').val("");
+
+  }
+});
+</script>

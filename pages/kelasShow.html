@@ -1,0 +1,77 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-6">
+      <h1><span id=pageTitle></span></h1>
+    </div>
+    <div class="col-xs-5" style='text-align:right' id='btnGroupSimpan'>
+      <button class='btn btn-warning' style='margin-top:4px;' onclick="loadPage('pages/kelasList.html')"><i class='glyphicon glyphicon-arrow-left'></i> Kembali</button>
+      <button class='btn btn-success' style='margin-top:4px;' onclick="editKelas()"><i class='glyphicon glyphicon-pencil'></i> Edit</button>
+    </div>
+    <div class="col-xs-5" style='text-align:right; display:none;' id='loaderSimpan'>
+      <img src='assets/image/default.gif' style='width:40px;'> Menyimpan data
+    </div>
+  </div><!-- row -->
+  <div class="row">
+      <div class='col-xs-2'><b>Nama Kelas</b></div>
+      <div class='col-xs-8'><span id='dataNamaKelas'></span></div>
+  </div><!-- row -->
+  <div class="row">
+      <div class='col-xs-2'><b>Wali Kelas</b></div>
+      <div class='col-xs-8'><span id='dataNamaWaliKelas'></span></div>
+  </div><!-- row -->
+  <div class="row">
+      <div class='col-xs-12'>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>NIS</th>
+              <th>Nama siswa</th>
+            </tr>
+          </thead>
+          <tbody id='aListSiswaRombel'>
+          </tbody>
+        </table>
+      </div>
+  </div><!-- row -->
+<script type='text/javascript'>
+function fillData(){
+  $.ajax({
+    url:webAddr+'/node.php?node=kelas-show',
+    type:'post',
+    data:{'id':gVar['id']},
+    dataType:'json',
+    beforeSend:function(){
+      $('.form-control').attr("disabled", "disabled");
+      statusBar("Loading data");
+    },
+    success:function(r){
+      if(r.status==1){
+        $('.form-control').removeAttr("disabled");
+        statusBar();
+    		$('#dataNamaKelas').html(r.dataKelas.NamaKelas);
+    		$('#dataNamaWaliKelas').html(r.dataKelas.NamaWaliKelas);
+        $('#aListSiswaRombel').html(tabulator(r.dataSiswa),"");
+      }else if(r.status==2){
+        statusBar("Not found");
+      }else if(r.status==3){
+        statusBar("Query failed");
+      }else{
+        statusBar("Invalid data");
+      }
+    },
+    error:function(){
+      statusBar("Gagal memuat data");
+      alert("Gagal memuat data");
+    }
+  });
+}
+function editKelas(){
+  gVar['editMode']=true;
+  loadPage('pages/kelasAdd.html');
+}
+$(document).ready(function(){
+  statusBar("Ready.");
+  fillData();
+  $('#pageTitle').html("Detail data kelas");
+});
+</script>

@@ -1,0 +1,131 @@
+
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-4">
+        <h1>Data Siswa</h1>
+      </div>
+    </div><!-- row -->
+    <div class="row">
+      <div class="col-xs-12" style="height:400px;overflow-y:scroll">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>NIS</th>
+              <th>Nama Terang</th>
+              <th>Nama Wali</th>
+              <th>HP Wali</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id='aListSiswa'>
+          </tbody>
+        </table>
+      </div><!-- col -->
+    </div><!-- row -->
+    <div class='row'>
+      <div class="col-xs-8">
+          <button onclick="loadPage('pages/siswaAdd.html');" class='btn btn-primary'>Tambah <span class='glyphicon glyphicon-plus'></span></button>
+          <button onclick="filterSiswa()" class='btn btn-primary'>Refresh <span class='glyphicon glyphicon-refresh'></span></button>
+          <span id=loaderStatus style="display:none;"><img src='assets/image/default.gif' style='width:30px;'></span>
+      </div>
+      <div class='col-xs-4'>
+          <input type="text" class="form-control right" id="textFilter" placeholder="Filter">
+      </div>
+    </div><!-- row -->
+  </div>
+  <script type='text/javascript'>
+  function loadListSiswa(filter){
+    if(filter===undefined)filter="";
+    $.ajax({
+      url:webAddr+'/node.php?node=siswa-list',
+      dataType:'html',
+      data:{'filter':filter},
+      type:'post',
+      beforeSend:function(){
+        $('#loaderStatus').show();
+        $('#aListSiswa').html("<tr><td colspan='6' align='center'><img src='assets/image/default.gif' style='width:30px;'></td></tr>");
+        statusBar("Memuat data siswa");
+      },
+      success:function(r){
+        try{
+          var jr=$.parseJSON(r);
+          if(jr.encumbered!==undefined){
+            statusBar("Data terlalu banyak untuk ditampilkan.");
+            $('#aListSiswa').html("<tr><td colspan='6' align='center'>Data terlalu banyak untuk ditampilkan, silahkan persempit filter.</td></tr>");
+          }else if(jr.zeroresult!==undefined){
+            statusBar("Data tidak ditemukan.");
+            $('#aListSiswa').html("<tr><td colspan='6' align='center'>Data tidak ditemukan</td></tr>");
+          }else{
+            $('#aListSiswa').html(tabulator(r,"<a onclick='editSiswa([id])' title='Edit'><span class='glyphicon glyphicon-pencil'></span></a> <a onclick='hapusSiswa([id])' title='Hapus'><span class='glyphicon glyphicon-trash'></span></a>"));
+            statusBar("Ready. Gunakan filter untuk melakukan pencarian.");
+          }
+          $('#loaderStatus').hide();
+        }
+        catch(err){
+          $('#aListWalas').html("<tr><td colspan='6' align='center'>Data gagal dimuat. Silahkan lapor ke pihak yang berwenang.\n "+err+"</td></tr>");
+          $('#loaderStatus').hide();
+          statusBar('parsing error');
+        }
+      },
+      error:function(){
+        $('#loaderStatus').hide();
+        statusBar("Kesalahan koneksi. Silahkan ulangi kembali");
+      }
+    });
+  }
+  $('input').keyup(function() {
+      delay(function(){
+        filterSiswa();
+      }, 1000 );
+  });
+  function filterSiswa(){
+    loadListSiswa($('#textFilter').val());
+  }
+  function editSiswa(id){
+    gVar['editMode']=true;
+    gVar['id']=id;
+    loadPage('pages/siswaAdd.html');
+  }
+  function hapusSiswa(id){
+    if(confirm("Apakah anda yakin akan menghapus siswa ini secara permanen?","Konfirmasi")){
+      $.ajax({
+        url:webAddr+'/node.php?node=siswa-delete',
+        type:'post',
+        dataType:'json',
+        data:{'id':id},
+        beforeSend:function(){
+          modal(1,"Menghapus.<br><img src='assets/image/ring.gif' style='width:40px;'>");
+          statusBar("Loading data");
+        },
+        success:function(r){
+          if(r.status===undefined){
+            statusBar("Error:json malformed");
+            modal(1000,"Terjadi kesalahan. silahkan lapor.");
+          }else if(r.status==1){
+            statusBar("Success");
+            modal(1000,"Data berhasil dihapus");
+            filterSiswa();
+          }else if(r.status==2){
+            statusBar("Dependency found");
+            modal(0);
+            alert("Siswa tidak bisa dihapus karena terdaftar dalam rombel:\n"+r.rombel,"Tidak bisa menghapus");
+          }else{
+            statusBar("Error:query error");
+            modal(1000,"Kesalahan kueri database. silahkan lapor");
+          }
+        },
+        error:function(e){
+          statusBar("Error:ajax error");
+          modal(1000,"Kesalahan ajax. silahkan lapor");
+        }
+      });
+    }else{
+
+    }
+  }
+  $(document).ready(function(){
+    loadListSiswa();
+    statusBar("Ready. Gunakan filter untuk melakukan pencarian.");
+    gVar['editMode']=false;
+  });
+  </script>

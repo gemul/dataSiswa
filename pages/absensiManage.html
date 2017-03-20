@@ -1,0 +1,141 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-6">
+      <h1><span id=pageTitle></span></h1>
+    </div>
+    <div class="col-xs-5" style='text-align:right' id='btnGroupSimpan'>
+    </div>
+    <div class="col-xs-5" style='text-align:right; display:none;' id='loaderSimpan'>
+      <img src='assets/image/default.gif' style='width:40px;'> Menyimpan data
+    </div>
+  </div><!-- row -->
+  <div class="row">
+    <div class="col-xs-12">
+      <form class='form-horizontal' id=frmAbsensi>
+        <div class='form-group'>
+          <label class='col-xs-2 control-label'>Pilih Siswa</label>
+          <div class='col-xs-8'>
+            <input type='text' class='form-control' name='namaSiswa' id='namaSiswa' placeholder='Nama'>
+            <div id=caption style='display:none;line-height:44px'><span id=captionNama></span><a href='javascript:editSiswa()'> <span class='glyphicon glyphicon-pencil'></span></a></div>
+            <input type='text' class='form-control' name='NIS' id='NIS' style='display:none;'>
+          </div>
+        </div><!-- form-group -->
+        <div class='form-group' id=detailAbsen>
+          <label class='col-xs-2 control-label'>Tanggal</label>
+          <div class='col-xs-2'>
+            <input type='text' class='form-control' name='TglAbsensi' id='TglAbsensi'>
+          </div>
+          <label class='col-xs-2 control-label'>Absensi</label>
+          <div class='col-xs-2'>
+            <select type='text' class='form-control' name='Absensi' placeholder='Absensi' id='Absensi'>
+              <option value='M'>Masuk</option>
+              <option value='S'>Sakit</option>
+              <option value='I'>Izin</option>
+              <option value='A'>AWOL</option>
+            </select>
+          </div>
+        </div><!-- form-group -->
+        <div class='form-group'>
+          <div class='col-xs-8 col-xs-offset-2' id=tombolSimpan>
+            <button type=button class='btn btn-success' onclick="updateAbsensi()">Simpan</button>
+          </div>
+        </div><!-- form-group -->
+      </form>
+    </div><!-- col -->
+  </div><!-- row -->
+  <div class="row" id=sepuluhTerakhir>
+    <div class='col-xs-12'>
+      <hr>
+      <b>10 Absensi Terakhir</b>
+      <table id=listSepuluhTerakhir>
+      </table>
+    </div>
+  </div><!-- row -->
+<script type='text/javascript'>
+gVar['entryMode']=false;
+function updateAbsensi(){
+  if($('#TglAbsensi').val()==""){
+    alert("Tanggal wajib diisi.","Data tidak jangkep");
+  }else{
+      $.ajax({
+      url:webAddr+'/node.php?node=absensi-update',
+      type:'post',
+      dataType:'json',
+      data:$('#frmAbsensi').serialize(),
+      beforeSend:function(){
+        $('#tombolSimpan').html("Menyimpan data mohon ditunggu...");
+        statusBar("Menyimpan data...");
+      },
+      success:function(r){
+        if(r.status===undefined){
+          alert("Penyimpanan data gagal, silahkan hubungi admin.\n[invResp]","Kesalahan Server");
+        }else if(r.status==1){
+          refresh10list($('#NIS').val());
+          $('#tombolSimpan').html("<button type=button class='btn btn-success' onclick='updateAbsensi()'>Simpan</button>");
+          statusBar("Data berhasil disimpan.");
+          alert("Perubahan sudah disimpan.","Sukses");
+        }else{
+            $('#tombolSimpan').html("<button type=button class='btn btn-success' onclick='updateAbsensi()'>Simpan</button>");
+            alert("Penyimpanan data gagal, silahkan hubungi admin.\n[invQue]","Kesalahan Server");
+            statusBar("Gagal menyimpan data.");
+        }
+        statusBar("Ready.");
+      },
+      error:function(){
+        alert("Penyimpanan data gagal. Pastikan anda terhubung ke internet lalu silahkan ulangi kembali.","Kesalahan Koneksi");
+          loadPage('pages/absensiManage.html');
+      }
+    });
+  }
+}
+
+function editSiswa(){
+  $('#detailAbsen').hide();
+  $('#tombolSimpan').hide();
+  $('#sepuluhTerakhir').hide();
+  $('#namaSiswa').val('').show();
+  $('#caption').hide();
+}
+$(document).ready(function(){
+  statusBar("Ready.");
+  if(gVar['entryMode']){
+    $('#pageTitle').html("Ubah data walas");
+  }else{
+    $('#pageTitle').html("Data Absensi");
+  }
+  $('#TglAbsensi').val((new Date()).toISOString().substring(0, 10));
+  $('#TglAbsensi').datepicker({format:'yyyy-mm-dd'});
+  $('#detailAbsen').hide();
+  $('#tombolSimpan').hide();
+  $('#sepuluhTerakhir').hide();
+  $('#namaSiswa').autocomplete({
+      serviceUrl: webAddr+'/node.php?node=ac-siswa-list-absensi',
+      onSelect: function (suggestion) {
+        $('#NIS').val(suggestion.data);
+        $('#namaSiswa').hide();
+        $('#captionNama').html(suggestion.value);
+        $('#caption').show();
+        $('#detailAbsen').show();
+        $('#tombolSimpan').show();
+        $('#sepuluhTerakhir').show();
+        refresh10list(suggestion.data);
+      }
+  });
+});
+function refresh10list(data){
+  $.ajax({
+    url:webAddr+'/node.php?node=absensi-list10&NIS='+data,
+    dataType:'json',
+    type:'post',
+    beforeSend:function(){
+      $('#listSepuluhTerakhir').html('<tr><td>Memuat...</td></tr>')
+    },
+    success:function(res){
+      $('#listSepuluhTerakhir').html("<tr><th width=200>Tanggal</th><th>Alasan</th></tr>"+tabulator(res));
+    },
+    error:function(){
+
+    }
+  });
+}
+</script>

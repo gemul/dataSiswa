@@ -1,0 +1,136 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-6">
+      <h1><span id=pageTitle></span></h1>
+    </div>
+    <div class="col-xs-5" style='text-align:right' id='btnGroupSimpan'>
+      <button class='btn btn-warning' style='margin-top:4px;' onclick="loadPage('pages/walasList.html')"><i class='glyphicon glyphicon-arrow-left'></i> Batal</button>
+      <button class='btn btn-success' style='margin-top:4px;' onclick="saveWalas();"><i class='glyphicon glyphicon-check'></i> Simpan</button>
+    </div>
+    <div class="col-xs-5" style='text-align:right; display:none;' id='loaderSimpan'>
+      <img src='assets/image/default.gif' style='width:40px;'> Menyimpan data
+    </div>
+  </div><!-- row -->
+  <div class="row">
+    <div class="col-xs-12">
+      <form class='form-horizontal' id=frmWalas>
+        <div class='form-group'>
+          <label class='col-xs-2 control-label'>Nama Walas</label>
+          <div class='col-xs-8'>
+            <input type='text' class='form-control' name='frmNamaWaliKelas' placeholder='Nama'>
+          </div>
+        </div><!-- form-group -->
+        <div class='form-group'>
+          <label class='col-xs-2 control-label'>NO HP</label>
+          <div class='col-xs-8'>
+            <input type='text' class='form-control' name='frmNoHPWali' placeholder='NO HP'>
+          </div>
+        </div>
+        <div class='form-group'>
+          <label class='col-xs-2 control-label'>Kelas</label>
+          <div class='col-xs-2'>
+            <select type='text' class='form-control' name='frmid_kelas' placeholder='Kelas' id='frmid_kelas'>
+            </select>
+          </div>
+        </div><!-- form-group -->
+      </form>
+    </div><!-- col -->
+  </div>
+<script type='text/javascript'>
+function saveWalas(){
+  if(gVar['editMode']){
+    var additionalData="&edit=1&id="+gVar['id'];
+    var node="walas-update";
+  }else{
+    var additionalData="";
+    var node="walas-save";
+  }
+  if($('[name="frmNamaWaliKelas"]').val()=="" || $('[name="frmNoHPWali"]').val()==""){
+    alert("Isi Nama no hp wajib.","Data tidak jangkep");
+  }else{
+      $.ajax({
+      url:webAddr+'/node.php?node='+node,
+      type:'post',
+      dataType:'json',
+      data:$('#frmWalas').serialize()+additionalData,
+      beforeSend:function(){
+        $('#btnGroupSimpan').hide();
+        $('#loaderSimpan').show();
+        statusBar("Menyimpan data...");
+      },
+      success:function(r){
+        if(r.status===undefined){
+          alert("Penyimpanan data gagal, silahkan hubungi admin.\n[invResp]","Kesalahan Server");
+        }else if(r.status==1){
+          loadPage('pages/walasList.html');
+        }else if(r.status==2){
+          alert("Penyimpanan data gagal, NIM sudah terdaftar.\n[duplicate]","Kesalahan Data");
+          $('#btnGroupSimpan').show();
+          $('#loaderSimpan').hide();
+        }else if(r.status==3){
+          alert("Penyimpanan data gagal, silahkan hubungi admin.\n[queryFail]","Kesalahan Server");
+          $('#btnGroupSimpan').show();
+          $('#loaderSimpan').hide();
+        }else if(r.status==4){
+          alert("Penyimpanan data gagal, silahkan hubungi admin.\n[queryNotFound]","Kesalahan Server");
+          $('#btnGroupSimpan').show();
+          $('#loaderSimpan').hide();
+        }else{
+          alert("Penyimpanan data gagal, silahkan hubungi admin.\n[invAction]","Kesalahan Server");
+          $('#btnGroupSimpan').show();
+          $('#loaderSimpan').hide();
+        }
+        statusBar("Ready.");
+      },
+      error:function(){
+        alert("Penyimpanan data gagal. Pastikan anda terhubung ke internet lalu silahkan ulangi kembali.","Kesalahan Koneksi");
+        $('#btnGroupSimpan').show();
+        $('#loaderSimpan').hide();
+        statusBar("Koneksi gagal. ");
+      }
+    });
+  }
+}
+function fillForm(){
+  $.ajax({
+    url:webAddr+'/node.php?node=walas-get',
+    type:'post',
+    data:{'id':gVar['id']},
+    dataType:'json',
+    beforeSend:function(){
+      $('.form-control').attr("disabled", "disabled");
+      statusBar("Loading data");
+    },
+    success:function(r){
+      if(r.status==1){
+        $('.form-control').removeAttr("disabled");
+        statusBar();
+    		$('[name="frmNamaWaliKelas"]').val(r.dataWalas.NamaWaliKelas);
+    		$('[name="frmNoHPWali"]').val(r.dataWalas.NoHPWali);
+    		$('[name="frmid_kelas"]').val(r.dataWalas.id_kelas);
+      }else if(r.status==2){
+        statusBar("Not found");
+      }else if(r.status==3){
+        statusBar("Query failed");
+      }else{
+        statusBar("Invalid data");
+      }
+    },
+    error:function(){
+      statusBar("Gagal memuat data");
+    }
+  });
+}
+$(document).ready(function(){
+  statusBar("Ready.");
+  $('#frmid_kelas').load(webAddr+'/node.php?node=snip-option-kelas');
+  if(gVar['editMode']){
+    fillForm();
+    $('#pageTitle').html("Ubah data walas");
+  }else{
+    $('#pageTitle').html("Tambah data walas");
+    $('.form-control').val("");
+
+  }
+});
+</script>

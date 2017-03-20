@@ -1,0 +1,57 @@
+  <div class='loginForm'>
+    <div class='container'>
+      <div class='row'>
+        <div class='col-xs-8'>
+          <h1>Login</h1>
+        </div>
+      </div>
+      <div class='row'>
+        <div class='col-xs-12 form-horizontal'>
+          <div class="form-group">
+            <label for="loginFieldUsername" class="col-xs-2 control-label">Username</label>
+            <div class='col-xs-6'>
+              <input type="text" class="form-control" id="loginFieldUsername" placeholder="Username">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="loginFieldPassword" class="col-xs-2 control-label">Password</label>
+            <div class='col-xs-6'>
+              <input type="password" class="form-control" id="loginFieldPassword" placeholder="Password">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class='col-xs-2'>
+            </div>
+            <div class='col-xs-6'>
+              <button type='button' onclick='actionLogin()' class='btn btn-primary'>Login</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="loginFieldPassword" class="col-xs-2 control-label">Server</label>
+            <div class='col-xs-6'>
+              <input type="text" class="form-control" id="webAddr" placeholder="" disabled='disabled'>
+            </div>
+            <div class='col-xs-1'>
+              <button class='btn btn-default' onclick="changeServer()"><span class='glyphicon glyphicon-pencil'></span></button>
+              <script>
+                function changeServer(){
+                  if($('#webAddr').attr('disabled')=='disabled'){
+                    $('#webAddr').removeAttr('disabled');
+                  }else{
+                    if(confirm("Apakah anda yakin untuk merubah alamat server?\nAlamat server yang tidak sesuai dapat menyebabkan aplikasi tidak dapat terhubung ke server.","Server Address Change")){
+                      localStorage.setItem("webAddr",$('#webAddr').val());
+                      webAddr=$('#webAddr').val();
+                      $('#webAddr').attr('disabled','disabled');
+                    }
+                  }
+                }
+              </script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  $('#webAddr').val(webAddr);
+  </script>
