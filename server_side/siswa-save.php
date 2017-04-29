@@ -1,0 +1,58 @@
+<?php
+require_once('koneksi.php');
+$data=array();
+$cek=mysqli_query($con,"select * from siswa where NIS = '".$_POST['NIS']."'");
+if(mysqli_num_rows($cek)>=1){
+	$data=array('status'=>'2');
+}else{
+	$query="insert into siswa (
+		NIS,
+		NamaSiswa,
+		NamaPanggilan,
+		TempatLahir,
+		TglLahir,
+		AlamatSiswa,
+		Agama,
+		CitaCita,
+		NamaOrtu,
+		AlamatOrtu,
+		NoHpOrtu,
+		KelaminSiswa,
+		NamaSekolah_SD_MI,
+		TahunSekolah_SD_MI,
+		NilaiNUN_SD_MI,
+		NamaSekolah_SMP_MTS,
+		TahunSekolah_SMP_MTS,
+		NilaiNUN_SMP_MTS
+		)
+		values
+		(
+		'".mysqli_real_escape_string($con,$_POST['frmNIS'])."',
+		'".mysqli_real_escape_string($con,$_POST['frmNamaSiswa'])."',
+		'".mysqli_real_escape_string($con,$_POST['frmNamaPanggilan'])."',
+		'".mysqli_real_escape_string($con,$_POST['frmTempatLahir'])."',
+		'".mysqli_real_escape_string($con,$_POST['frmTglLahir'])."',
+		'".mysqli_real_escape_string($con,$_POST['frmAlamatSiswa'])."',
+		'".mysqli_real_escape_string($con,$_POST['frmAgama'])."',
+		'".mysqli_real_escape_string($con,$_POST['frmCitaCita'])."',
+		'".mysqli_real_escape_string($con,$_POST['frmNamaOrtu'])."',
+		'".mysqli_real_escape_string($con,$_POST['frmAlamatOrtu'])."',
+		'".mysqli_real_escape_string($con,$_POST['frmNoHpOrtu'])."',
+		'".mysqli_real_escape_string($con,$_POST['frmKelaminSiswa'])."',
+		'".mysqli_real_escape_string($con,$_POST['frmNamaSekolah_SD_MI'])."',
+		'".mysqli_real_escape_string($con,$_POST['frmTahunSekolah_SD_MI'])."',
+		'".mysqli_real_escape_string($con,$_POST['frmNilaiNUN_SD_MI'])."',
+		'".mysqli_real_escape_string($con,$_POST['frmNamaSekolah_SMP_MTS'])."',
+		'".mysqli_real_escape_string($con,$_POST['frmTahunSekolah_SMP_MTS'])."',
+		'".mysqli_real_escape_string($con,$_POST['frmNilaiNUN_SMP_MTS'])."'
+		)
+	";
+	$q=mysqli_query($con,$query);
+	if($q){
+		$data=array('status'=>'1','message'=>mysqli_error($con));
+	}else{
+		$data=array('status'=>'3','message'=>mysqli_error($con),'query'=>$query);
+	}
+}
+echo json_encode($data);
+?>
