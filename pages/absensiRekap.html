@@ -89,7 +89,7 @@ function updateRekap(data,tahun){
     },
     success:function(res){
       $('#listRekap').html("<thead><tr><th width=200>Bulan</th><th>Sakit</th><th>Ijin</th><th>Alpa</th></tr></thead><tbody>"+tabulator(res)+"</tbody>");
-      cetak(webAddr+'/node.php?node=absensi-rekap&NIS='+data+"&tahun="+tahun);
+      cetak(webAddr+'/node.php?node=absensi-rekap-print&NIS='+data+"&tahun="+tahun);
     },
     error:function(){
 
