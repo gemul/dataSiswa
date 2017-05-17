@@ -42,11 +42,9 @@
     </div>
   </div><!-- row -->
 <script type='text/javascript'>
-const {BrowserWindow, dialog, shell} = remote;
-const fs = require('fs');
+
 gVar['entryMode']=false;
 
-let print_win;
 
 function editSiswa(){
   $('#detailRekap').hide();
@@ -99,8 +97,8 @@ function updateRekap(data,tahun){
   });
 }
 function cetak(addr){
-  print_win = new BrowserWindow({'auto-hide-menu-bar':true});
-  print_win.loadURL(addr);
-  print_win.show();
+  windowPrint = new BrowserWindow({'auto-hide-menu-bar':true});
+  windowPrint.loadURL(addr);
+  windowPrint.show();
 }
 </script>
