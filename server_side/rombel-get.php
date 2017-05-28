@@ -13,7 +13,7 @@ if(!$q){
 	while($res=mysqli_fetch_array($q)){
 		$data=array('status'=>'1','message'=>mysqli_error($con),'query'=>$query,'dataKelas'=>$res);
 	}
-	$rombel=mysqli_query($con,"select * from rombel inner join siswa using(NIS) where id_kelas='".mysqli_real_escape_string($con,$_POST['id'])."' order by NamaSiswa asc");
+	$rombel=mysqli_query($con,"select * from rombel inner join siswa using(NIS) where id_kelas='".mysqli_real_escape_string($con,$_POST['id'])."' and tahun='".$_POST['tahun']."' order by NamaSiswa asc");
 	$data['jumlah']=mysqli_num_rows($rombel);
 	$data['dataSiswa']=array();
 	while($res=mysqli_fetch_array($rombel)){

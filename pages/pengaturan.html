@@ -1,0 +1,68 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-6">
+      <h1><span id=pageTitle></span></h1>
+    </div>
+    <div class="col-xs-5" style='text-align:right' id='btnGroupSimpan'>
+    </div>
+    <div class="col-xs-5" style='text-align:right; display:none;' id='loaderSimpan'>
+      <img src='assets/image/default.gif' style='width:40px;'> Menyimpan data
+    </div>
+  </div><!-- row -->
+  <div class="row">
+    <div class="col-xs-12 form-horizontal">
+      <div class='form-group'>
+        <label class='col-xs-2 control-label'>Tahun ajaran</label>
+        <div class='col-xs-4'>
+          <input type='text' class='form-control' name='tahunAjaran' placeholder='Tahun Ajaran' onchange="markChange(this);">
+        </div>
+        <div class='col-xs-4'>
+          <button class='btn btn-success' onclick="simpanTahunAjaran();"><i class='glyphicon glyphicon-check'></i> Simpan</button>
+          Masukkan tahun terakhir
+        </div>
+    </div><!-- col -->
+  </div>
+<script type='text/javascript'>
+function markChange(e){;
+  e.style.background="#ffff00";
+}
+function simpanTahunAjaran(){
+  tahunAjaran=$('[name="tahunAjaran"]').val();
+  $('[name="tahunAjaran"]').css({'background':'#ffffff'});
+  $('#debugPanel .debugRight').html("Tahun Ajaran : "+(tahunAjaran-1)+"/"+tahunAjaran);
+}
+function fillForm(){
+  $('[name="tahunAjaran"]').val(tahunAjaran);
+  /*
+  $.ajax({
+    url:webAddr+'/node.php?node=walas-get',
+    type:'post',
+    data:{'id':gVar['id']},
+    dataType:'json',
+    beforeSend:function(){
+      statusBar("Loading data");
+    },
+    success:function(r){
+      if(r.status==1){
+        $('.form-control').removeAttr("disabled");
+        statusBar();
+      }else if(r.status==2){
+        statusBar("Not found");
+      }else if(r.status==3){
+        statusBar("Query failed");
+      }else{
+        statusBar("Invalid data");
+      }
+    },
+    error:function(){
+      statusBar("Gagal memuat data");
+    }
+  });
+  */
+}
+$(document).ready(function(){
+  statusBar("Ready.");
+  fillForm();
+  $('#pageTitle').html("Pengaturan");
+});
+</script>

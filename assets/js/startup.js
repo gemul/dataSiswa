@@ -20,6 +20,8 @@ $(document).ready(function(){
       // Disable caching of AJAX responses
       cache: false
   });
+  //tahun ajaran
+  $('#debugPanel .debugRight').html("Tahun Ajaran : "+(tahunAjaran-1)+"/"+tahunAjaran);
     //"edit here" end
 });
 var delay = (function(){
