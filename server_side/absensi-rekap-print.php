@@ -101,7 +101,6 @@ if(mysqli_num_rows($q)==0){
 	$data=array('encumbered'=>true);
 }
 
-
 ?>
 <style>
 .print-table {
