@@ -6,6 +6,9 @@ by. Gema Ulama Putra
 */
 
 const { remote } = require('electron');
+const {BrowserWindow, dialog, shell} = remote;
+const fs = require('fs');
+let windowPrint;
 $(document).ready(function(){
   //"edit here" start
   if(localStorage.getItem("username")){

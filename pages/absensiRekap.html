@@ -34,6 +34,7 @@
   </div><!-- row -->
   <div class="row" id=detailRekap>
     <div class='col-xs-12'>
+      <button class='btn btn-default' onclick='cetak();'>Cetak</button>
       <hr>
       <b>Rekapitulasi</b>
       <table id=listRekap class='table table-striped'>
@@ -41,7 +42,10 @@
     </div>
   </div><!-- row -->
 <script type='text/javascript'>
+
 gVar['entryMode']=false;
+var gdata="";
+var gtahun=0;
 
 function editSiswa(){
   $('#detailRekap').hide();
@@ -86,10 +90,19 @@ function updateRekap(data,tahun){
     },
     success:function(res){
       $('#listRekap').html("<thead><tr><th width=200>Bulan</th><th>Sakit</th><th>Ijin</th><th>Alpa</th></tr></thead><tbody>"+tabulator(res)+"</tbody>");
+      gdata=data;
+      gtahun=tahun;
     },
     error:function(){
-
     }
+  });
+}
+function cetak(){
+  windowPrint = new BrowserWindow({'auto-hide-menu-bar':true});
+  windowPrint.loadURL(webAddr+'/node.php?node=absensi-rekap-print&NIS='+gdata+"&tahun="+gtahun);
+  windowPrint.show();
+  windowPrint.webContents.on('did-finish-load',function(){
+    windowPrint.webContents.print();
   });
 }
 </script>
