@@ -40,7 +40,7 @@ function muatRombel(){
   $.ajax({
     url:webAddr+'/node.php?node=rombel-get',
     type:'post',
-    data:{'id':$('#frmid_kelas').val()},
+    data:{'id':$('#frmid_kelas').val(),'tahun':tahunAjaran},
     dataType:'json',
     beforeSend:function(){
       $('.form-control').attr("disabled", "disabled");

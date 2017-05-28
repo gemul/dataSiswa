@@ -44,6 +44,10 @@ h1 {
 .debugPanel .debugText{
   float:left;
 }
+.debugPanel .debugRight{
+  float:right;
+  padding-right:10px;
+}
 .postLogin {
   display:none;
 }
